@@ -1,4 +1,13 @@
 services:
+  api:
+    build: .
+    depends_on:
+      db:
+        condition: service_healthy
+    env_file:
+      - .env
+    ports:
+      - "8080:8080"
   db:
     image: postgres:16
     environment:

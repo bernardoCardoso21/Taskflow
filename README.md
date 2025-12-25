@@ -1,92 +1,37 @@
-1) Project spec: TaskFlow REST API (high-signal Go repo)
-   Core features (MVP)
+Week 1 (or 2–3 days if you grind)
 
-Auth: JWT (access token) + password hashing (bcrypt)
+Project scaffold + Docker + migrations
 
-Users can manage their own:
+Server skeleton + middleware
 
-Projects
+Auth endpoints + JWT + bcrypt
 
-Tasks
+Unit tests for auth service
 
-CRUD endpoints
+Week 2
 
-Pagination + filtering on tasks
+Projects CRUD
 
-Proper validation + error model
+Ownership checks (user can only access own records)
 
-Postgres with migrations
+Repo layer with SQL queries
 
-Docker compose for local dev
+Integration tests with Postgres
 
-Tests: unit + integration (DB)
+Week 3
 
-Non-functional “signals” (this is what gets interviews)
+Tasks CRUD + filtering + cursor pagination
 
-Clean architecture-ish separation: handler → service → repo
+Better validation + consistent error codes
 
-Context timeouts, request IDs
+OpenAPI/Swagger generation
 
-Structured logging (zap/slog)
+Week 4
 
-Graceful shutdown
+Observability: request logging, metrics endpoint, pprof (optional)
 
-OpenAPI/Swagger (later)
+Caching (optional)
 
-CI: go test, golangci-lint
+Rate limiting middleware (optional)
 
-2) API design (endpoints)
-   Auth
-
-POST /v1/auth/register
-
-POST /v1/auth/login
-
-GET /v1/auth/me (requires JWT)
-
-Projects
-
-POST /v1/projects
-
-GET /v1/projects (paginated)
-
-GET /v1/projects/{id}
-
-PATCH /v1/projects/{id}
-
-DELETE /v1/projects/{id}
-
-Tasks
-
-POST /v1/projects/{projectId}/tasks
-
-GET /v1/tasks
-Query params:
-
-status=todo|doing|done
-
-projectId=...
-
-q=search
-
-limit, cursor (cursor pagination is a good signal)
-
-GET /v1/tasks/{id}
-
-PATCH /v1/tasks/{id}
-
-DELETE /v1/tasks/{id}
-
-Response conventions
-
-Success: { "data": ... , "meta": ... }
-
-Error:
-
-{
-"error": {
-"code": "VALIDATION_ERROR",
-"message": "invalid request",
-"details": [{ "field": "email", "message": "must be valid" }]
-}
-}
+Polish README + diagrams

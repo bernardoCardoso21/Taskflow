@@ -1,0 +1,28 @@
+# Local env files (do not commit secrets)
+.env
+.env.*
+
+!.env.example
+
+# Go build outputs
+/bin/
+/dist/
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+
+# IDE/editor
+.idea/
+.vscode/
+*.iml
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
