@@ -1,4 +1,4 @@
-Week 1 (or 2–3 days if you grind)
+Week 1
 
 Project scaffold + Docker + migrations
 
@@ -28,10 +28,10 @@ OpenAPI/Swagger generation
 
 Week 4
 
-Observability: request logging, metrics endpoint, pprof (optional)
+Observability: request logging, metrics endpoint, pprof
 
-Caching (optional)
+Caching
 
-Rate limiting middleware (optional)
+Rate limiting middleware
 
 Polish README + diagrams
