@@ -1,4 +1,4 @@
-# TaskFlow
+Week 1
 
 TaskFlow is a **task-tracking backend API** built to demonstrate real-world backend engineering practices in Go.  
 It focuses on clean architecture, secure data access, and scalable API design.
@@ -42,39 +42,10 @@ This type of system is commonly used for:
 
 ## Core domain model
 
-- **User**
-    - Owns projects and tasks
-- **Project**
-    - Groups related work
-    - Belongs to a single user
-- **Task**
-    - Represents a unit of work
-    - Belongs to a project (and therefore a user)
+Observability: request logging, metrics endpoint, pprof
 
-Ownership is enforced at every layer so users can only access their own data.
+Caching
 
----
+Rate limiting middleware
 
-## API features (current)
-
-- JWT-based authentication
-- User registration and login
-- Project CRUD operations
-- Ownership enforcement at the SQL level
-- Cursor-based pagination
-- Consistent JSON error responses
-- Health check endpoint
-
----
-
-## Technical decisions & architecture
-
-### Language
-- **Go**
-- Chosen for simplicity, performance, and strong ecosystem for backend services
-
----
-
-### Architecture
-The project follows a **layered architecture**:
-
+Polish README + diagrams
