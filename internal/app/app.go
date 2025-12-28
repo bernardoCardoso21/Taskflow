@@ -23,12 +23,15 @@ func New() (*App, error) {
 	}
 
 	userRepo := postgres.NewUserRepo(db)
+	projectRepo := postgres.NewProjectRepo(db)
 
 	authSvc := service.NewAuthService(userRepo, cfg.JWTSecret)
+	projectSvc := service.NewProjectService(projectRepo)
 
 	router := httpx.NewRouter(httpx.Deps{
-		Config:  cfg,
-		AuthSvc: authSvc,
+		Config:     cfg,
+		AuthSvc:    authSvc,
+		ProjectSvc: projectSvc,
 	})
 
 	return &App{
