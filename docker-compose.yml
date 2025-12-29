@@ -8,6 +8,7 @@ services:
       - .env
     ports:
       - "8080:8080"
+
   db:
     image: postgres:16
     environment:
@@ -29,10 +30,13 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    env_file:
+      - .env
     volumes:
       - ./migrations:/migrations
-    entrypoint: ["migrate", "-path", "/migrations", "-database", "postgres://taskflow:taskflow@db:5432/taskflow?sslmode=disable"]
+    entrypoint: ["migrate", "-path", "/migrations", "-database", "${DATABASE_URL}"]
     command: ["up"]
+    restart: "no"
 
 volumes:
   pgdata:

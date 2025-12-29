@@ -24,14 +24,17 @@ func New() (*App, error) {
 
 	userRepo := postgres.NewUserRepo(db)
 	projectRepo := postgres.NewProjectRepo(db)
+	taskRepo := postgres.NewTaskRepo(db)
 
 	authSvc := service.NewAuthService(userRepo, cfg.JWTSecret)
 	projectSvc := service.NewProjectService(projectRepo)
+	tasksSvc := service.NewTaskService(taskRepo)
 
 	router := httpx.NewRouter(httpx.Deps{
 		Config:     cfg,
 		AuthSvc:    authSvc,
 		ProjectSvc: projectSvc,
+		TaskSvc:    tasksSvc,
 	})
 
 	return &App{
