@@ -1,6 +1,7 @@
 .env
-test/integration/.env.test
+.env.test
 .env.*.local
+test/integration/.env.test
 
 !.env.example
 
