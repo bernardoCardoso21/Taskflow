@@ -9,6 +9,7 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
+	"github.com/go-chi/cors"
 )
 
 type Deps struct {
@@ -24,6 +25,14 @@ func NewRouter(d Deps) http.Handler {
 	r.Use(RequestID)
 	r.Use(RecovererJSON)
 	r.Use(middleware.StripSlashes)
+	r.Use(cors.Handler(cors.Options{
+		AllowedOrigins:   []string{"http://localhost:8081", "http://localhost:8081/taskflow/swaggerui", "http://localhost:8081/*", "http://localhost:*"},
+		AllowedMethods:   []string{"GET", "POST", "PATCH", "DELETE", "OPTIONS"},
+		AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type"},
+		ExposedHeaders:   []string{"Link"},
+		AllowCredentials: false,
+		MaxAge:           300,
+	}))
 
 	r.Get("/healthz", func(w http.ResponseWriter, _ *http.Request) {
 		WriteJSON(w, 200, map[string]any{"status": "ok"})

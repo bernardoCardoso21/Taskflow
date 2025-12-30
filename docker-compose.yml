@@ -38,5 +38,16 @@ services:
     command: ["up"]
     restart: "no"
 
+  swagger-ui:
+    image: swaggerapi/swagger-ui
+    container_name: taskflow-swagger-ui
+    environment:
+      BASE_URL: /taskflow/swaggerui
+      SWAGGER_JSON: /spec/openapi.yaml
+    volumes:
+      - ./docs/openapi.yaml:/spec/openapi.yaml:ro
+    ports:
+      - "8081:8080"
+
 volumes:
   pgdata:
