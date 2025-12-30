@@ -8,6 +8,7 @@ services:
       - .env
     ports:
       - "8080:8080"
+
   db:
     image: postgres:16
     environment:
@@ -29,10 +30,24 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    env_file:
+      - .env
     volumes:
       - ./migrations:/migrations
-    entrypoint: ["migrate", "-path", "/migrations", "-database", "postgres://taskflow:taskflow@db:5432/taskflow?sslmode=disable"]
+    entrypoint: ["migrate", "-path", "/migrations", "-database", "${DATABASE_URL}"]
     command: ["up"]
+    restart: "no"
+
+  swagger-ui:
+    image: swaggerapi/swagger-ui
+    container_name: taskflow-swagger-ui
+    environment:
+      BASE_URL: /taskflow/swaggerui
+      SWAGGER_JSON: /spec/openapi.yaml
+    volumes:
+      - ./docs/openapi.yaml:/spec/openapi.yaml:ro
+    ports:
+      - "8081:8080"
 
 volumes:
   pgdata:
