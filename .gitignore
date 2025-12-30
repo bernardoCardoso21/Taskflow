@@ -1,10 +1,9 @@
-# Local env files (do not commit secrets)
 .env
-.env.*
+test/integration/.env.test
+.env.*.local
 
 !.env.example
 
-# Go build outputs
 /bin/
 /dist/
 *.exe
@@ -15,14 +14,11 @@
 *.test
 *.out
 
-# IDE/editor
 .idea/
 .vscode/
 *.iml
 
-# OS
 .DS_Store
 Thumbs.db
 
-# Logs
 *.log
