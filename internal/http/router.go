@@ -26,13 +26,22 @@ func NewRouter(d Deps) http.Handler {
 	r.Use(RecovererJSON)
 	r.Use(middleware.StripSlashes)
 	r.Use(cors.Handler(cors.Options{
-		AllowedOrigins:   []string{"http://localhost:8081", "http://localhost:8081/taskflow/swaggerui", "http://localhost:8081/*", "http://localhost:*"},
+		AllowedOrigins: []string{
+			"http://localhost:3000",
+			"http://127.0.0.1:3000",
+			"http://localhost:8081",
+			"http://127.0.0.1:8081",
+		},
 		AllowedMethods:   []string{"GET", "POST", "PATCH", "DELETE", "OPTIONS"},
 		AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type"},
 		ExposedHeaders:   []string{"Link"},
 		AllowCredentials: false,
 		MaxAge:           300,
 	}))
+
+	r.Options("/*", func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusNoContent)
+	})
 
 	r.Get("/healthz", func(w http.ResponseWriter, _ *http.Request) {
 		WriteJSON(w, 200, map[string]any{"status": "ok"})
