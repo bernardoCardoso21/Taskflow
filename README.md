@@ -45,26 +45,22 @@ This type of system is commonly used for:
 
 ```mermaid
 graph TD
-    Client["Client\n(Web / Mobile)"]
-    SwaggerUI["Swagger UI\n:8081"]
+    Client["Client (Web / Mobile)"]
+    SwaggerUI["Swagger UI :8081"]
 
     subgraph Docker["Docker Compose"]
-        API["API Server\n:8080\n(Go + chi)"]
-
-        subgraph Layers["Application Layers"]
-            HTTP["HTTP Layer\nrouting · middleware · validation"]
-            SVC["Service Layer\nbusiness logic · error mapping"]
-            REPO["Repository Layer\nraw SQL · ownership checks"]
-        end
-
-        DB[("PostgreSQL 16\n:5432")]
-        Migrate["Migration Runner\n(startup job)"]
+        API["API Server :8080 (Go + chi)"]
+        HTTP["HTTP Layer — routing · middleware · validation"]
+        SVC["Service Layer — business logic · error mapping"]
+        REPO["Repository Layer — raw SQL · ownership checks"]
+        DB[("PostgreSQL 16 :5432")]
+        Migrate["Migration Runner"]
     end
 
-    Client -->|"REST / JSON"| API
-    SwaggerUI -->|"REST / JSON"| API
+    Client -->|REST / JSON| API
+    SwaggerUI -->|REST / JSON| API
     API --> HTTP --> SVC --> REPO --> DB
-    Migrate -->|"runs migrations"| DB
+    Migrate -->|runs on startup| DB
 ```
 
 ---
@@ -113,39 +109,29 @@ sequenceDiagram
     participant SVC as Auth Service
     participant DB as PostgreSQL
 
-    rect rgb(230, 240, 255)
-        Note over C,DB: Registration
-        C->>API: POST /v1/auth/register {email, password}
-        API->>SVC: RegisterUser(email, password)
-        SVC->>SVC: bcrypt hash password
-        SVC->>DB: INSERT INTO users
-        DB-->>SVC: user id
-        SVC-->>API: UserID
-        API-->>C: 201 { data: { id } }
-    end
+    Note over C,DB: Registration
+    C->>API: POST /v1/auth/register
+    API->>SVC: RegisterUser(email, password)
+    SVC->>SVC: bcrypt hash password
+    SVC->>DB: INSERT INTO users
+    DB-->>SVC: user id
+    API-->>C: 201 { data: { id } }
 
-    rect rgb(230, 255, 230)
-        Note over C,DB: Login
-        C->>API: POST /v1/auth/login {email, password}
-        API->>SVC: Login(email, password)
-        SVC->>DB: SELECT user by email
-        DB-->>SVC: user row
-        SVC->>SVC: bcrypt compare password
-        SVC->>SVC: sign JWT (24h, HS256)
-        SVC-->>API: accessToken
-        API-->>C: 200 { data: { accessToken } }
-    end
+    Note over C,DB: Login
+    C->>API: POST /v1/auth/login
+    API->>SVC: Login(email, password)
+    SVC->>DB: SELECT user by email
+    DB-->>SVC: user row
+    SVC->>SVC: bcrypt compare + sign JWT (24h HS256)
+    API-->>C: 200 { data: { accessToken } }
 
-    rect rgb(255, 245, 220)
-        Note over C,DB: Protected Request
-        C->>API: GET /v1/projects\nAuthorization: Bearer token
-        API->>API: JWT middleware validates token
-        API->>SVC: ListProjects(userID, cursor)
-        SVC->>DB: SELECT WHERE user_id = $1
-        DB-->>SVC: projects[]
-        SVC-->>API: Page[Project]
-        API-->>C: 200 { data: [...], meta: { nextCursor } }
-    end
+    Note over C,DB: Protected Request
+    C->>API: GET /v1/projects (Bearer token)
+    API->>API: JWT middleware validates token
+    API->>SVC: ListProjects(userID, cursor)
+    SVC->>DB: SELECT WHERE user_id = $1
+    DB-->>SVC: projects[]
+    API-->>C: 200 { data: [...], meta: { nextCursor } }
 ```
 
 ---
@@ -185,15 +171,13 @@ sequenceDiagram
 
     C->>API: GET /v1/tasks?limit=20
     API->>DB: SELECT ... ORDER BY created_at DESC, id DESC LIMIT 21
-    Note over DB: fetches limit+1 to detect next page
-    DB-->>API: 21 rows
+    DB-->>API: 21 rows (limit+1 detects next page)
     API-->>C: { data: [20 tasks], meta: { nextCursor: {createdAt, id} } }
 
     C->>API: GET /v1/tasks?limit=20&cursorCreatedAt=...&cursorId=...
-    API->>DB: SELECT ... WHERE (created_at, id) < ($cursor) ORDER BY ... LIMIT 21
+    API->>DB: SELECT ... WHERE (created_at, id) < ($cursor) LIMIT 21
     DB-->>API: rows
     API-->>C: { data: [...], meta: { nextCursor: null } }
-    Note over C: null nextCursor means last page
 ```
 
 ---
